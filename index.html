@@ -1,0 +1,772 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Suyash Singh</title>
+<meta name="description" content="Suyash Singh - B.Tech CSE at VIT Chennai. VeriSwarm: hardware-attested verifiable inference for autonomous drone swarms.">
+<meta name="author" content="Suyash Singh">
+<link rel="canonical" href="https://suyashsingh.website/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%2314161D'/%3E%3Ctext x='50' y='75' font-family='Impact,Haettenschweiler,sans-serif' font-size='78' fill='%23E6E7E0' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
+<meta name="theme-color" content="#E6E7E0">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Suyash Singh">
+<meta property="og:description" content="Suyash Singh - B.Tech CSE at VIT Chennai. VeriSwarm: hardware-attested verifiable inference for autonomous drone swarms.">
+<meta property="og:url" content="https://suyashsingh.website/">
+<meta property="og:image" content="https://suyashsingh.website/img/portrait.jpg">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..500&display=swap">
+
+<style>
+:root{
+  color-scheme: light;
+  --paper:#E6E7E0;
+  --paper-2:#DCDDD4;
+  --ink:#14161D;
+  --ink-2:#3C404B;
+  --muted:#686C78;
+  --rule:#B4B5AB;
+  --mag:#B5156F;
+  --blue:#1C4C86;
+  --red:#B8252B;
+  --display:"Anton","Impact","Arial Narrow",sans-serif;
+  --serif:"Newsreader","Iowan Old Style",Georgia,serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  --col:1180px;
+}
+*{box-sizing:border-box}
+img{max-width:100%; height:auto;}   /* width/height attrs set the ratio, never a fixed height */
+html{scroll-behavior:smooth}
+body{
+  margin:0; color:var(--ink); background-color:var(--paper);
+  background-image:
+    linear-gradient(to right, rgba(20,22,29,.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(20,22,29,.05) 1px, transparent 1px);
+  background-size:96px 96px;
+  font-family:var(--serif); font-size:18px; line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+#sky{position:fixed; inset:0; width:100%; height:100%; z-index:0; display:block; pointer-events:none;}
+.page{position:relative; z-index:2;}
+.col{max-width:var(--col); margin:0 auto; padding:0 32px;}
+
+.eyebrow{font-family:var(--mono); font-size:11.5px; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--muted); margin:0 0 12px;}
+h1,h2,h3{font-family:var(--display); font-weight:400; text-transform:uppercase; margin:0; text-wrap:balance;}
+h2{font-size:clamp(56px,7vw,104px); line-height:.9; letter-spacing:.005em;}
+p{margin:0 0 16px; max-width:64ch; color:var(--ink-2);}
+a{color:var(--ink); text-decoration-color:var(--mag); text-underline-offset:3px;}
+a:hover{color:var(--mag);}
+strong{color:var(--ink); font-weight:600;}
+:focus-visible{outline:2px solid var(--mag); outline-offset:3px;}
+
+/* ---------- hero ---------- */
+.hero{padding:30px 0 132px;}
+.topnav{display:flex; justify-content:space-between; align-items:center; margin-bottom:13vh;
+  font-family:var(--mono); font-size:12px; letter-spacing:.12em; text-transform:uppercase;}
+.topnav .mark{color:var(--ink);}
+.topnav nav{display:flex; gap:26px;}
+.topnav nav a{text-decoration:none; border-bottom:1px solid transparent; padding-bottom:2px;}
+.topnav nav a:hover{border-color:var(--mag);}
+.hero-text{max-width:600px;}
+.hero h1{font-size:clamp(76px,11vw,168px); line-height:.86; letter-spacing:.004em;}
+.thesis{font-style:italic; font-size:clamp(21px,2.1vw,27px); line-height:1.38; color:var(--ink);
+  margin:28px 0 0; max-width:31ch; text-wrap:pretty;}
+.facts{list-style:none; padding:0; margin:36px 0 0; border-top:1px solid var(--ink); max-width:470px;}
+.facts li{display:flex; gap:18px; align-items:baseline; padding:10px 0; border-bottom:1px solid var(--rule);}
+.facts .k{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--muted); min-width:84px;}
+.facts .v{font-size:16.5px; color:var(--ink);}
+.cue{font-family:var(--mono); font-size:11.5px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--muted); margin-top:60px;}
+
+/* exploded-view callouts */
+.callouts{position:fixed; inset:0; z-index:3; pointer-events:none;}
+.co{position:absolute; left:0; top:0; visibility:hidden; opacity:0; display:flex; gap:10px; align-items:flex-start; will-change:transform;}
+.co::before{content:""; width:26px; height:1px; background:var(--ink); margin-top:8px;}
+.co b{display:block; font-family:var(--mono); font-weight:500; font-size:11px; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--ink);}
+.co span{display:block; font-style:italic; font-size:14.5px; color:var(--ink-2); max-width:22ch; line-height:1.35;}
+
+/* ---------- pinned 3D section ---------- */
+.flight{position:relative; height:420vh;}
+.flight-sticky{position:sticky; top:0; height:100vh; display:flex; align-items:center;}
+.steps{width:min(430px,38vw); margin-left:max(32px, calc((100vw - var(--col))/2 + 32px));
+  display:grid; grid-template-columns:2px 1fr; gap:0 28px;}
+.track{background:var(--rule); position:relative;}
+.track i{position:absolute; inset:0; background:var(--mag); transform-origin:top; transform:scaleY(0);}
+.steps .inner{display:flex; flex-direction:column;}
+.steps ol{list-style:none; margin:0; padding:0; display:grid; gap:24px;}
+.steps li{color:var(--muted); transition:color .3s;}
+.steps li h3{font-size:36px; line-height:1; color:inherit; display:flex; gap:14px; align-items:baseline;}
+.steps li .n{font-family:var(--mono); font-size:12px; letter-spacing:.08em;}
+.steps li p{font-size:16.5px; line-height:1.5; margin:6px 0 0; color:inherit; max-width:36ch;}
+.steps li.on{color:var(--ink);}
+.steps li.on .n{color:var(--mag);}
+.go{margin-top:30px; font-family:var(--mono); font-size:12px; letter-spacing:.12em; text-transform:uppercase;
+  align-self:flex-start;}
+.legend{position:absolute; right:max(32px, calc((100vw - var(--col))/2 + 32px)); bottom:30px;
+  display:flex; flex-wrap:wrap; gap:8px 22px; justify-content:flex-end; max-width:560px;
+  font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-2);}
+.legend span{display:flex; align-items:center; gap:8px;}
+.legend svg{flex:none;}
+
+/* ---------- index ---------- */
+.index{padding:130px 0 60px;}
+.sec-head{display:flex; justify-content:space-between; align-items:flex-end; gap:24px;
+  border-bottom:1px solid var(--ink); padding-bottom:16px;}
+.sec-note{font-family:var(--mono); font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin:0;}
+.entry{border-bottom:1px solid var(--ink); scroll-margin-top:24px;}
+.entry-row{appearance:none; border:0; background:none; color:inherit; font:inherit; text-align:left;
+  width:100%; cursor:pointer; display:grid; grid-template-columns:150px minmax(0,1fr) minmax(0,1.05fr) 40px;
+  gap:28px; align-items:center; padding:28px 2px;}
+.entry-row .tag{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted);}
+.entry-row .ttl{font-family:var(--display); font-size:clamp(38px,5.2vw,66px); line-height:.95; text-transform:uppercase; transition:color .2s;}
+.entry-row .one{font-size:17px; line-height:1.45; color:var(--ink-2);}
+.entry-row .one b{display:block; font-family:var(--mono); font-weight:500; font-size:11px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--mag); margin-top:7px;}
+.entry-row:hover .ttl{color:var(--mag);}
+.plus{width:22px; height:22px; position:relative; justify-self:end;}
+.plus::before,.plus::after{content:""; position:absolute; left:0; right:0; top:50%; height:1.5px; background:var(--ink); transition:transform .3s;}
+.plus::after{transform:rotate(90deg);}
+.entry.open .plus::after{transform:rotate(0deg);}
+.entry-body{display:grid; grid-template-rows:0fr; transition:grid-template-rows .5s cubic-bezier(.3,.7,.2,1);}
+.entry.open .entry-body{grid-template-rows:1fr;}
+.entry-body > .inner{overflow:hidden;}
+.pad{padding:6px 2px 64px; margin-left:178px;}
+
+.lede{font-size:22px; line-height:1.5; color:var(--ink); max-width:56ch;}
+.split{display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr); gap:48px; align-items:start;}
+.strip{border:1px solid var(--ink); background:rgba(255,255,255,.28);}
+.strip .hd{display:flex; justify-content:space-between; font-family:var(--mono); font-size:10.5px;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--muted); padding:9px 14px; border-bottom:1px solid var(--ink);}
+.strip pre{margin:0; padding:16px 14px 6px; font-family:var(--mono); font-size:14.5px; line-height:1.75; color:var(--ink); overflow-x:auto;}
+.strip pre .f{color:var(--mag);}
+.strip dl{margin:0; padding:6px 14px 14px; display:grid; grid-template-columns:auto 1fr; gap:3px 14px;}
+.strip dt{font-family:var(--mono); font-size:13px; color:var(--mag);}
+.strip dd{margin:0; font-size:15px; color:var(--ink-2);}
+
+.readout{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); border-top:1px solid var(--ink);
+  border-bottom:1px solid var(--ink); margin:40px 0 10px;}
+.readout > div{padding:20px 18px; border-left:1px solid var(--rule);}
+.readout > div:first-child{border-left:0; padding-left:0;}
+.readout .v{font-family:var(--display); font-size:44px; line-height:1; font-variant-numeric:tabular-nums; color:var(--ink);}
+.readout .v small{font-family:var(--mono); font-size:13px; color:var(--muted); letter-spacing:.02em;}
+.readout .k{font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-top:9px; line-height:1.5;}
+.small{font-family:var(--mono); font-size:11.5px; letter-spacing:.04em; color:var(--muted);}
+
+.figs{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:34px 30px; margin:44px 0;}
+.figs .wide{grid-column:1 / -1;}
+figure{margin:0;}
+figure img{width:100%; display:block; mix-blend-mode:multiply; filter:grayscale(1) contrast(1.04);}
+figcaption{font-size:15px; line-height:1.5; color:var(--ink-2); border-top:1px solid var(--ink); padding-top:10px; margin-top:12px; max-width:62ch;}
+figcaption b{font-family:var(--mono); font-weight:500; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink); margin-right:6px;}
+
+h4{font-family:var(--mono); font-weight:500; font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink); margin:44px 0 12px;}
+
+.plates{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:18px; margin:26px 0 8px; align-items:start;}
+/* contact sheet: the two vertical frames run full height, the two group shots stack beside them.
+   the 4:3 cells set the row height, so the tall cells stretch to match at any width — no gaps. */
+.notes{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; margin:26px 0 8px;}
+.notes .plate{aspect-ratio:auto;}
+.notes .p-portrait{grid-column:1; grid-row:1 / span 2;}
+.notes .p-stage{grid-column:2; grid-row:1 / span 2;}
+.notes .p-acm{grid-column:3; grid-row:1; aspect-ratio:4/3;}
+.notes .p-mic{grid-column:3; grid-row:2; aspect-ratio:4/3;}
+.notes .p-portrait img{object-position:center 22%;}
+.notes .p-stage img{object-position:center 46%;}
+/* frame number, like a contact sheet */
+.plate .no{position:absolute; top:0; left:0; z-index:1; background:var(--ink); color:var(--paper);
+  font-family:var(--mono); font-size:10px; letter-spacing:.16em; padding:4px 8px;}
+.plate.has span i{font-style:normal; color:var(--muted); letter-spacing:.09em;}
+@media (max-width:860px){
+  .notes{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .notes .p-portrait{grid-column:1; grid-row:1; aspect-ratio:3/4;}
+  .notes .p-stage{grid-column:2; grid-row:1; aspect-ratio:3/4;}
+  .notes .p-acm{grid-column:1; grid-row:2;}
+  .notes .p-mic{grid-column:2; grid-row:2;}
+}
+.plates.one{grid-template-columns:minmax(0,420px);}
+.plate.has{border-style:solid; border-color:var(--ink);}
+.plate.has span{position:relative; z-index:1; align-self:flex-start; background:var(--paper);
+  border:1px solid var(--ink); padding:4px 9px;}
+.shot{margin:36px 0 0; max-width:440px;}
+.shot img{width:100%; display:block; border:1px solid var(--ink); mix-blend-mode:normal; filter:none;}
+.plate{position:relative; aspect-ratio:4/3; border:1px dashed var(--ink-2); display:flex; flex-direction:column; justify-content:flex-end; padding:13px;
+  background:repeating-linear-gradient(135deg, rgba(20,22,29,.05) 0 1px, transparent 1px 10px);}
+.plate span{font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink);}
+.plate em{font-size:14px; color:var(--muted);}
+.plate img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;}
+
+.stack{font-family:var(--mono); font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-2);
+  border-top:1px solid var(--rule); padding-top:14px; margin-top:34px; line-height:1.9;}
+.logo{display:flex; align-items:center; justify-content:center; padding:18px 0;}
+.logo img{width:100%; max-width:330px; mix-blend-mode:multiply; display:block;}
+.flow{font-family:var(--mono); font-size:13.5px; line-height:1.7; color:var(--ink); border-top:1px solid var(--ink); border-bottom:1px solid var(--ink);
+  padding:14px 0; margin:24px 0; overflow-x:auto; white-space:pre;}
+.flow .a{color:var(--mag);}
+
+/* ---------- writing / notes / contact ---------- */
+.block{padding:100px 0 40px;}
+.rows{list-style:none; padding:0; margin:0;}
+.rows li{display:grid; grid-template-columns:178px minmax(0,1fr); gap:28px; padding:18px 2px; border-bottom:1px solid var(--rule);}
+.rows .when{font-family:var(--mono); font-size:11.5px; letter-spacing:.08em; color:var(--muted); padding-top:4px;}
+.rows .what{font-size:17px; color:var(--ink-2);}
+.rows .what b{color:var(--ink); font-weight:600;}
+.rows + h4{margin-top:56px;}
+
+footer{padding:110px 0 70px;}
+footer .big{font-family:var(--display); font-size:clamp(64px,10vw,150px); line-height:.86; text-transform:uppercase; margin:0 0 26px; color:var(--ink);}
+.mail{font-size:clamp(22px,2.6vw,32px); font-style:italic; text-decoration-thickness:1.5px;}
+.foot{display:flex; flex-wrap:wrap; gap:14px 30px; margin-top:40px; padding-top:16px; border-top:1px solid var(--ink);
+  font-family:var(--mono); font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted);}
+.foot a{color:var(--ink);}
+
+/* ---------- responsive ---------- */
+@media (max-width:860px){
+  .col{padding:0 20px;}
+  .topnav{margin-bottom:9vh;}
+  .topnav nav{gap:16px;}
+  .hero{padding-bottom:46vh;}
+  .flight-sticky{align-items:flex-end;}
+  .steps{width:auto; margin:0 14px 18px; padding:18px 16px; background:rgba(230,231,224,.95); border-top:1px solid var(--ink);}
+  .steps li{display:none;}
+  .steps li.on{display:block;}
+  .legend{display:none;}
+  .entry-row{grid-template-columns:minmax(0,1fr) 30px; gap:10px 14px; padding:24px 0;}
+  .entry-row .tag{grid-column:1 / -1;}
+  .entry-row .one{grid-column:1 / -1; grid-row:3;}
+  .entry-row .plus{grid-column:2; grid-row:2;}
+  .pad{margin-left:0;}
+  .split{grid-template-columns:1fr; gap:26px;}
+  .readout{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .readout > div:nth-child(3){border-left:0; padding-left:0;}
+  .readout > div:nth-child(n+3){border-top:1px solid var(--rule);}
+  .figs{grid-template-columns:1fr;}
+  .rows li{grid-template-columns:1fr; gap:4px;}
+}
+
+/* fallbacks: no WebGL, or reduced motion */
+.no-gl #sky,.no-gl .callouts,.no-gl .legend{display:none;}
+.no-gl .flight,.reduced .flight{height:auto;}
+.no-gl .flight-sticky,.reduced .flight-sticky{position:relative; height:auto; padding:40px 0 60px;}
+.no-gl .steps li,.reduced .steps li{display:block; color:var(--ink);}
+.no-gl .track,.reduced .track{display:none;}
+.no-gl .steps,.reduced .steps{grid-template-columns:1fr;}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto;}
+  .entry-body,.plus::after,.steps li{transition:none;}
+}
+</style>
+
+<canvas id="sky" aria-hidden="true"></canvas>
+<div class="callouts" aria-hidden="true">
+  <div class="co" data-k="jetson"><div><b>Jetson Orin Nano</b><span>on-board perception and signing host</span></div></div>
+  <div class="co" data-k="body"><div><b>OP-TEE secure element</b><span>the Ed25519 key is born here and never leaves</span></div></div>
+  <div class="co" data-k="camera"><div><b>Camera</b><span>frames go through YOLOv8n, then get hashed</span></div></div>
+  <div class="co" data-k="rotor"><div><b>Quad airframe</b><span>flown in PX4/Gazebo and for real</span></div></div>
+</div>
+
+<div class="page">
+
+<header class="hero" id="top">
+  <div class="col">
+    <div class="topnav">
+      <span class="mark">S. Singh</span>
+      <nav aria-label="Primary"><a href="#work">Work</a><a href="#writing">Writing</a><a href="#contact">Contact</a></nav>
+    </div>
+    <div class="hero-text">
+      <p class="eyebrow">Sectional · VIT Chennai · 12°50′N 80°09′E</p>
+      <h1>Suyash<br>Singh</h1>
+      <p class="thesis">I build the layer that decides whether an autonomous machine's decision deserves to be believed — and the hardware that proves it.</p>
+      <ul class="facts">
+        <li><span class="k">Now</span><span class="v">B.Tech CSE, Year 2 · VIT Chennai</span></li>
+        <li><span class="k">Research</span><span class="v">First author · IEEE journal, 2026 (in preparation)</span></li>
+        <li><span class="k">Hardware</span><span class="v">Jetson Orin Nano · OP-TEE · Ed25519</span></li>
+      </ul>
+    </div>
+  </div>
+</header>
+
+<section class="flight" id="flight" aria-label="How VeriSwarm works">
+  <div class="flight-sticky">
+    <div class="steps">
+      <div class="track"><i></i></div>
+      <div class="inner">
+        <p class="eyebrow">VeriSwarm — the protocol in four moves</p>
+        <ol>
+          <li class="on"><h3><span class="n">1</span>Sign</h3>
+            <p>Each drone seals what it saw, the model it ran and the action it chose into one receipt, signed inside a secure element.</p></li>
+          <li><h3><span class="n">2</span>Verify</h3>
+            <p>Peers check the signature and the model hash — and compare actions only where their camera footprints actually overlap.</p></li>
+          <li><h3><span class="n">3</span>Vote</h3>
+            <p>Signed ACK or DISPUTE votes go to a reputation-weighted Byzantine quorum. No ground station anywhere in the loop.</p></li>
+          <li><h3><span class="n">4</span>Isolate</h3>
+            <p>The drone that was fooled loses consensus, decays to a floor weight, and is dropped from the swarm.</p></li>
+        </ol>
+        <a class="go" href="#veriswarm" data-open="veriswarm">Read the research →</a>
+      </div>
+    </div>
+    <div class="legend" aria-hidden="true">
+      <span><svg width="22" height="8"><line x1="0" y1="4" x2="22" y2="4" stroke="#14161D" stroke-width="1.5"/></svg>Drone</span>
+      <span><svg width="22" height="8"><line x1="0" y1="4" x2="22" y2="4" stroke="#B5156F" stroke-width="2"/></svg>Attestation link</span>
+      <span><svg width="22" height="12"><ellipse cx="11" cy="6" rx="10" ry="4.5" fill="none" stroke="#1C4C86" stroke-width="1.4" stroke-dasharray="2.5 2"/></svg>Camera footprint</span>
+      <span><svg width="10" height="10"><circle cx="5" cy="5" r="4" fill="#B8252B"/></svg>Disputed</span>
+    </div>
+  </div>
+</section>
+
+<section class="index" id="work">
+  <div class="col">
+    <div class="sec-head">
+      <div><p class="eyebrow">Index of work</p><h2>Work</h2></div>
+      <p class="sec-note">Select an entry to open it</p>
+    </div>
+
+    <!-- VERISWARM -->
+    <article class="entry" id="veriswarm">
+      <button class="entry-row" aria-expanded="false" aria-controls="b-vs">
+        <span class="tag">Research · 2026</span>
+        <span class="ttl">VeriSwarm</span>
+        <span class="one">Drones that check each other's decisions — hardware-attested, Byzantine-tolerant.<b>0 false rejections / 4,000 honest receipts</b></span>
+        <span class="plus" aria-hidden="true"></span>
+      </button>
+      <div class="entry-body" id="b-vs" role="region" aria-label="VeriSwarm"><div class="inner"><div class="pad">
+        <div class="split">
+          <div>
+            <p class="lede">A drone with a swapped model, or a camera fooled by a printed patch, keeps sending actions that look perfectly normal. VeriSwarm makes the rest of the swarm catch it.</p>
+            <p>After every inference, a drone signs a receipt that binds who it is, the frame it saw, the model it ran and the action it chose — under one signature made inside an OP-TEE secure element. Peers verify the signature, check the model hash against an approved list, and only where their camera footprints overlap, compare the claimed action with what they saw themselves.</p>
+            <p>Disputes go to a reputation-weighted Byzantine quorum that tolerates ⌊(k−1)/3⌋ lying voters. A drone that keeps losing consensus decays to a floor weight and is dropped. The protocol logic is pinned down by 102 property-based tests.</p>
+            <p class="small">First author · Second author: Dr. Subbulakshmi T, VIT Chennai</p>
+          </div>
+          <aside class="strip" aria-label="Receipt structure">
+            <div class="hd"><span>Receipt</span><span>Ed25519</span></div>
+            <pre>R = (<span class="f">d</span>, <span class="f">t</span>, <span class="f">hₓ</span>, <span class="f">m</span>, <span class="f">a</span>, <span class="f">ν</span>)
+σ = Sign<sub>sk</sub>(Canonical(R))</pre>
+            <dl>
+              <dt>d</dt><dd>drone identity</dd>
+              <dt>t</dt><dd>timestamp, ns</dd>
+              <dt>hₓ</dt><dd>SHA-256 of the frame</dd>
+              <dt>m</dt><dd>SHA-256 of the model</dd>
+              <dt>a</dt><dd>chosen action</dd>
+              <dt>ν</dt><dd>fresh 16-byte nonce</dd>
+            </dl>
+          </aside>
+        </div>
+
+        <div class="readout">
+          <div><div class="v">6.2–19.3<small> ms</small></div><div class="k">Live consensus, 3 → 11 drones, real LAN</div></div>
+          <div><div class="v">0<small> / 4,000</small></div><div class="k">False rejections on honest receipts · 95.5% without the co-visibility gate</div></div>
+          <div><div class="v">4.7<small> ms</small></div><div class="k">Hardware-signed receipt, 21 mJ each</div></div>
+          <div><div class="v">1.5–7.6<small> KB</small></div><div class="k">Attestation traffic per cycle</div></div>
+        </div>
+        <p class="small">Measured on the Jetson Orin Nano — the slowest device in the swarm, so these are worst-case numbers.</p>
+
+        <div class="figs">
+          <figure class="wide">
+            <img src="img/architecture.jpg" width="920" height="411" loading="lazy" decoding="async" alt="VeriSwarm node architecture: input block, four protocol phases, and applied outcome.">
+            <figcaption><b>Architecture</b>One inference cycle: input, the four protocol phases, and what happens next — execute, isolate, or defer.</figcaption>
+          </figure>
+          <figure>
+            <img src="img/patch-transfer.jpg" width="920" height="705" loading="lazy" decoding="async" alt="Adversarial patch transfer across viewpoints.">
+            <figcaption><b>Patch transfer</b>A patch built for one camera blinds its victim (0.88 → 0.00 confidence) but stops working beyond ~9° of viewpoint. At 23° the neighbour re-detects the obstacle in every trial.</figcaption>
+          </figure>
+          <figure>
+            <img src="img/roc.jpg" width="920" height="744" loading="lazy" decoding="async" alt="ROC sweep used to choose the agreement threshold theta.">
+            <figcaption><b>Choosing θ</b>The agreement threshold sits at the bend of the sweep — detection near its peak, false positives still zero, stable across ten seeds.</figcaption>
+          </figure>
+        </div>
+
+        <p>The honest part: the semantic check has a limit. A patch deliberately optimised to work across viewpoints does defeat it — so the paper measures that case instead of citing its way around it.</p>
+
+        <h4>Built, not only simulated</h4>
+        <p>The hardware root of trust is mine end to end: a custom OP-TEE Trusted Application that signs inside the ARM TrustZone secure world on a physical Jetson Orin Nano. I built the airframe around it and ran the system both in PX4/Gazebo simulation and in real flight.</p>
+        <div class="plates one">
+          <div class="plate has"><img src="img/airframe.jpg" width="1000" height="565" loading="lazy" decoding="async" alt="The quadrotor airframe built for VeriSwarm, beside the NVIDIA Jetson Orin Nano developer kit."><span>Airframe</span></div>
+        </div>
+
+        <p class="stack">Python · gRPC / protobuf · PyTorch · YOLOv8n · OP-TEE · ARM TrustZone · Ed25519 · PX4 SITL · Gazebo · Jetson Orin Nano</p>
+        <p class="small">Manuscript in preparation for an IEEE journal.</p>
+      </div></div></div>
+    </article>
+
+    <!-- GRIDCC -->
+    <article class="entry" id="gridcc">
+      <button class="entry-row" aria-expanded="false" aria-controls="b-gr">
+        <span class="tag">Product · 2026</span>
+        <span class="ttl">GridCC</span>
+        <span class="one">A live campus map with a messenger the server genuinely cannot read.<b>Signal-Protocol Double Ratchet · two native apps</b></span>
+        <span class="plus" aria-hidden="true"></span>
+      </button>
+      <div class="entry-body" id="b-gr" role="region" aria-label="GridCC"><div class="inner"><div class="pad">
+        <div class="split">
+          <div>
+            <p class="lede">Most messengers pick a side. GridCC refuses to.</p>
+            <p>Signal picks secrecy and makes multi-device painful; Instagram picks convenience and reads everything. GridCC runs a Signal-Protocol Double Ratchet on the wire — forward secrecy and post-compromise security — with a layered key-recovery scheme, so signing in on a new device restores full history in seconds with no QR scanning.</p>
+            <p>X25519 identity keys per device, AES-GCM-256 envelopes, HKDF-SHA256 deriving every chain and message key, private keys held in the hardware-backed Keystore on Android and the Keychain on iOS. Built twice, natively — Kotlin with Jetpack Compose, and Swift with SwiftUI — over a Node, MongoDB and Socket.io backend.</p>
+            <p class="small">Built with Abhijan Patra</p>
+          </div>
+          <div class="logo"><img src="img/gridcc.png" width="700" height="350" loading="lazy" decoding="async" alt="GridCC logo"></div>
+        </div>
+        <p class="stack">Kotlin · Jetpack Compose · Swift · SwiftUI · X25519 · Double Ratchet · AES-GCM-256 · HKDF · Node · Socket.io · MongoDB · Firebase</p>
+      </div></div></div>
+    </article>
+
+    <!-- NEO -->
+    <article class="entry" id="neo">
+      <button class="entry-row" aria-expanded="false" aria-controls="b-neo">
+        <span class="tag">Security · 2025</span>
+        <span class="ttl">Neo Browser</span>
+        <span class="one">Penetration testing the browser that proctors your exams.<b>Coordinated disclosure with the vendor</b></span>
+        <span class="plus" aria-hidden="true"></span>
+      </button>
+      <div class="entry-body" id="b-neo" role="region" aria-label="Neo Browser"><div class="inner"><div class="pad">
+        <p class="lede">The thing that locks your machine during an exam is, itself, an attack surface.</p>
+        <p>Neo Browser locks a machine down during proctored academic assessments, which makes the strength of that lockdown the whole product. I tested it, found vulnerabilities, and scoped them together with the IamNeo.ai team and VIT Chennai faculty — working with the vendor rather than around them.</p>
+        <p>Everything went back through a structured responsible-disclosure report. The finding is rarely the interesting part of security work; doing something useful with it is.</p>
+        <p class="stack">Application security · Vulnerability research · Responsible disclosure · Vendor coordination</p>
+      </div></div></div>
+    </article>
+
+    <!-- PIGLASS -->
+    <article class="entry" id="piglass">
+      <button class="entry-row" aria-expanded="false" aria-controls="b-pg">
+        <span class="tag">Systems · 2025</span>
+        <span class="ttl">PiGlass Terminal</span>
+        <span class="one">A phone drives a headless Kali box it is never physically connected to.<b>Zero-trust · no physical data link</b></span>
+        <span class="plus" aria-hidden="true"></span>
+      </button>
+      <div class="entry-body" id="b-pg" role="region" aria-label="PiGlass Terminal"><div class="inner"><div class="pad">
+        <p class="lede">A zero-trust control plane that fits in your pocket.</p>
+        <p>A Raspberry Pi Zero W runs headless Kali Linux with no data link to the phone at all — every byte crosses the phone's own Wi-Fi hotspot. Authentication is strictly Ed25519 SSH keys held in the Android Keystore, with TOFU host-key pinning so the first connection can't be silently intercepted.</p>
+        <div class="flow">PHONE <span class="a">── hotspot ──▶</span> PI ZERO W :22 <span class="a">── ssh -L ──▶</span> VNC @ localhost:5901</div>
+        <p>VNC and websockify stay bound to localhost and are reached only through SSH local port forwarding; UFW limits the Pi to port 22 from the hotspot subnet. Discovery runs over mDNS with a parallel TCP-22 sweep as a fallback, and a foreground service keeps tunnels alive through long jobs.</p>
+        <p class="stack">Kotlin · Jetpack Compose · Ed25519 · TOFU pinning · SSH tunnelling · Kali Linux · Raspberry Pi · mDNS / Avahi · UFW</p>
+      </div></div></div>
+    </article>
+
+  </div>
+</section>
+
+<section class="block" id="writing">
+  <div class="col">
+    <div class="sec-head"><div><p class="eyebrow">Published and in progress</p><h2>Writing</h2></div></div>
+    <ul class="rows">
+      <li><span class="when">May 2026</span><span class="what"><b>Hyperledger Fabric Experiment</b> — <em>Open Source For You</em>. Deploying a permissioned blockchain end to end: chaincode, peer and orderer configuration, channel setup, transaction flow.</span></li>
+      <li><span class="when">In preparation</span><span class="what"><b>VeriSwarm: Hardware-Attested Distributed Inference for Adversarially-Robust UAV Autonomy</b> — first author, for an IEEE journal.</span></li>
+    </ul>
+    <h4>Roles</h4>
+    <ul class="rows">
+      <li><span class="when">2026 — now</span><span class="what"><b>Technical Head</b>, ACM VIT Chennai Student Chapter</span></li>
+      <li><span class="when">2026 — now</span><span class="what"><b>Cybersecurity Lead</b>, Microsoft Innovations Club</span></li>
+      <li><span class="when">Jan – Jul 2026</span><span class="what"><b>Campus Ambassador</b>, GeeksforGeeks</span></li>
+    </ul>
+  </div>
+</section>
+
+<section class="block" id="notes">
+  <div class="col">
+    <div class="sec-head"><div><p class="eyebrow">Off the chart</p><h2>Field notes</h2></div></div>
+    <p class="lede">The other half of the work: teaching the room what I just spent a month learning.</p>
+    <div class="notes">
+      <div class="plate has p-portrait"><em class="no">01</em><img src="img/portrait.jpg" width="700" height="1244" loading="lazy" decoding="async" alt="Portrait of Suyash Singh."><span>Suyash <i>· Chennai</i></span></div>
+      <div class="plate has p-stage"><em class="no">02</em><img src="img/on-stage.jpg" width="820" height="1447" loading="lazy" decoding="async" alt="Suyash Singh speaking on stage at VIT Chennai beside a slide titled Cybersecurity."><span>On stage <i>· MIC session</i></span></div>
+      <div class="plate has p-acm"><em class="no">03</em><img src="img/acm.jpg" width="900" height="675" loading="lazy" decoding="async" alt="The ACM VIT Chennai student chapter team in front of the chapter banner."><span>ACM <i>· technical head</i></span></div>
+      <div class="plate has p-mic"><em class="no">04</em><img src="img/mic.jpg" width="1000" height="750" loading="lazy" decoding="async" alt="A packed room of students at a Microsoft Innovations Club session, VIT Chennai."><span>MIC <i>· full house</i></span></div>
+    </div>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="col">
+    <p class="eyebrow">Contact</p>
+    <p class="big">Write<br>to me</p>
+    <a class="mail" href="mailto:suyashsinghdtg@gmail.com">suyashsinghdtg@gmail.com</a>
+    <div class="foot">
+      <a href="https://github.com/berlinflix">GitHub · berlinflix</a>
+      <a href="https://www.linkedin.com/in/suyashsingh7/">LinkedIn · suyashsingh7</a>
+      <span>Chennai, India</span>
+    </div>
+  </div>
+</footer>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var root = document.documentElement;
+
+  /* ---------- index: expand in place ---------- */
+  function setOpen(entry, open){
+    entry.classList.toggle('open', open);
+    entry.querySelector('.entry-row').setAttribute('aria-expanded', open ? 'true' : 'false');
+    var body = entry.querySelector('.entry-body');
+    if ('inert' in body) body.inert = !open;
+  }
+  var entries = [].slice.call(document.querySelectorAll('.entry'));
+  entries.forEach(function(en){
+    setOpen(en, false);
+    en.querySelector('.entry-row').addEventListener('click', function(){
+      setOpen(en, !en.classList.contains('open'));
+    });
+  });
+  [].forEach.call(document.querySelectorAll('[data-open]'), function(a){
+    a.addEventListener('click', function(e){
+      var en = document.getElementById(a.getAttribute('data-open'));
+      if (!en) return;
+      e.preventDefault(); setOpen(en, true);
+      en.scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block: 'start'});
+    });
+  });
+  if (location.hash){
+    var hit = document.getElementById(location.hash.slice(1));
+    if (hit && hit.classList.contains('entry')) setOpen(hit, true);
+  }
+
+  /* ---------- 3D ---------- */
+  var gl = false;
+  try { var probe = document.createElement('canvas');
+        gl = !!(window.THREE && (probe.getContext('webgl2') || probe.getContext('webgl'))); } catch(e){}
+  if (!gl){ root.classList.add('no-gl'); return; }
+  if (reduced) root.classList.add('reduced');
+
+  var INK=0x14161D, MAG=0xB5156F, BLUE=0x1C4C86, RED=0xB8252B, PAPER=0xE6E7E0;
+  var cInk=new THREE.Color(INK), cMag=new THREE.Color(MAG), cRed=new THREE.Color(RED), cBlue=new THREE.Color(BLUE);
+  var canvas=document.getElementById('sky');
+  var scene=new THREE.Scene(); scene.fog=new THREE.Fog(PAPER, 12, 34);
+  var camera=new THREE.PerspectiveCamera(40, innerWidth/innerHeight, .1, 100);
+  var renderer=new THREE.WebGLRenderer({canvas:canvas, antialias:true, alpha:true});
+  renderer.setClearColor(0x000000, 0);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1, 1.75));
+
+  function V(x,y,z){ return new THREE.Vector3(x,y,z); }
+  function clamp(x,a,b){ return x<a?a:x>b?b:x; }
+  function smooth(a,b,x){ var t=clamp((x-a)/(b-a),0,1); return t*t*(3-2*t); }
+  function lerp(a,b,t){ return a+(b-a)*t; }
+  function back(x){ var c1=1.70158, c3=c1+1; return 1 + c3*Math.pow(x-1,3) + c1*Math.pow(x-1,2); }
+  function edges(geo, mat){ return new THREE.LineSegments(new THREE.EdgesGeometry(geo, 1), mat); }
+  function ringLine(r, seg, mat){
+    var pts=[]; for (var i=0;i<=seg;i++){ var a=i/seg*Math.PI*2; pts.push(V(Math.cos(a)*r,0,Math.sin(a)*r)); }
+    return new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), mat);
+  }
+
+  function makeDrone(){
+    var mat=new THREE.LineBasicMaterial({color:INK, transparent:true, opacity:.92});
+    var g=new THREE.Group(), parts={}, list=[], blades=[];
+    function add(o, dir, key){ o.userData.base=o.position.clone(); o.userData.dir=dir; g.add(o); list.push(o); if(key) parts[key]=o; return o; }
+    add(edges(new THREE.BoxGeometry(.62,.16,.62), mat), V(0,0,0), 'body');
+    var top=edges(new THREE.BoxGeometry(.36,.1,.42), mat); top.position.set(0,.14,-.02); add(top, V(0,1.3,0), 'jetson');
+    var cam=new THREE.Group(); cam.position.set(0,-.15,.2);
+    cam.add(edges(new THREE.BoxGeometry(.2,.14,.13), mat));                                   // camera body
+    var yoke=edges(new THREE.BoxGeometry(.26,.02,.03), mat); yoke.position.set(0,.08,0); cam.add(yoke);  // gimbal yoke
+    var lens=edges(new THREE.CylinderGeometry(.055,.055,.12,12), mat); lens.rotation.x=Math.PI/2; lens.position.set(0,0,.1); cam.add(lens);
+    var hood=edges(new THREE.CylinderGeometry(.078,.06,.04,12), mat); hood.rotation.x=Math.PI/2; hood.position.set(0,0,.175); cam.add(hood);
+    add(cam, V(0,-1.05,.55), 'camera');
+    [[1,1],[1,-1],[-1,1],[-1,-1]].forEach(function(s,k){
+      var sx=s[0], sz=s[1], d=V(sx,0,sz).normalize();
+      var arm=edges(new THREE.BoxGeometry(.62,.04,.07), mat); arm.position.set(sx*.31,0,sz*.31); arm.rotation.y=-Math.atan2(sz,sx);
+      add(arm, d.clone().multiplyScalar(.85));
+      var motor=edges(new THREE.CylinderGeometry(.07,.07,.1,10), mat); motor.position.set(sx*.56,.04,sz*.56);
+      add(motor, V(sx,.4,sz).normalize().multiplyScalar(1.3));
+      var rg=new THREE.Group(); rg.position.set(sx*.56,.11,sz*.56);
+      rg.add(ringLine(.28, 30, mat));
+      var blade=edges(new THREE.BoxGeometry(.52,.008,.05), mat); rg.add(blade); blades.push(blade);
+      add(rg, V(sx,.9,sz).normalize().multiplyScalar(1.55), k===0 ? 'rotor' : null);
+    });
+    var led=new THREE.Mesh(new THREE.SphereGeometry(.03,10,10), new THREE.MeshBasicMaterial({color:BLUE, transparent:true}));
+    led.position.set(0,.25,.1); add(led, V(0,1.9,0));
+    g.userData={mat:mat, parts:parts, list:list, blades:blades, led:led};
+    return g;
+  }
+
+  var swarm=new THREE.Group(); scene.add(swarm);
+  var GROUND=-1.55;
+  var slots=[
+    [-3.6,.2,-1.9],[-1.8,.45,-1.9],[0,.1,-1.9],[1.8,.4,-1.9],[3.6,.15,-1.9],
+    [-2.7,-.05,0],[-.9,.3,0],[.9,.05,0],[2.7,.35,0],
+    [-2.7,.3,1.9],[-.9,0,1.9],[.9,.35,1.9],[2.7,.1,1.9]
+  ].map(function(s){ return V(s[0],s[1],s[2]); });
+  var N=slots.length, LEAD=7, ROGUE=6;
+
+  var drones=[], tags=[], feet=[];
+  var tagMat=new THREE.LineBasicMaterial({color:MAG, transparent:true, opacity:.9});
+  for (var i=0;i<N;i++){
+    var d=makeDrone(); d.userData.ph=Math.random()*6.28; d.userData.sp=.6+Math.random()*.5;
+    swarm.add(d); drones.push(d);
+    var tg=new THREE.Group();
+    tg.add(edges(new THREE.PlaneGeometry(.34,.22), tagMat));
+    tg.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints([V(-.11,.035,0),V(.11,.035,0),V(-.11,-.035,0),V(.05,-.035,0)]), tagMat));
+    swarm.add(tg); tags.push(tg);
+    var fm=new THREE.LineDashedMaterial({color:BLUE, dashSize:.1, gapSize:.07, transparent:true, opacity:0});
+    var fp=ringLine(1.15, 72, fm); fp.computeLineDistances(); swarm.add(fp); feet.push(fp);
+  }
+  var order=[]; for (i=0;i<N;i++) if (i!==LEAD) order.push(i);
+
+  var pairs=[];
+  for (i=0;i<N;i++) for (var j=i+1;j<N;j++) if (slots[i].distanceTo(slots[j]) < 2.35) pairs.push([i,j]);
+  var lp=new Float32Array(pairs.length*6), lc=new Float32Array(pairs.length*6);
+  var lgeo=new THREE.BufferGeometry();
+  lgeo.setAttribute('position', new THREE.BufferAttribute(lp,3));
+  lgeo.setAttribute('color', new THREE.BufferAttribute(lc,3));
+  var linkMat=new THREE.LineBasicMaterial({vertexColors:true, transparent:true, opacity:.85});
+  swarm.add(new THREE.LineSegments(lgeo, linkMat));
+
+  var steps=[].slice.call(document.querySelectorAll('.steps li'));
+  var bar=document.querySelector('.track i');
+  var callouts={}; [].forEach.call(document.querySelectorAll('.co'), function(el){ callouts[el.getAttribute('data-k')]=el; });
+
+  var HERO_POS=V(0,0,0), HERO_SCALE=2.2, narrow=false;
+  var heroH=800, flTop=900, flLen=2400, vh=innerHeight;
+  function measure(){
+    vh=innerHeight;
+    heroH=document.getElementById('top').offsetHeight;
+    var fl=document.getElementById('flight'); flTop=fl.offsetTop; flLen=Math.max(1, fl.offsetHeight - vh);
+  }
+  function layout(){
+    narrow = innerWidth < 860;
+    camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix();
+    renderer.setSize(innerWidth, innerHeight);
+    if (narrow){ swarm.position.set(0,1.9,0); swarm.scale.setScalar(.6); HERO_POS.set(0,-7.2,1.7); HERO_SCALE=2.8; }
+    else       { swarm.position.set(2.4,.1,0); swarm.scale.setScalar(1);  HERO_POS.set(.5,.35,2.2); HERO_SCALE=2.2; }
+    measure();
+  }
+  layout();
+  addEventListener('resize', function(){ layout(); if (reduced) draw(0); });
+
+  var tmp=V(0,0,0), t=0, lastStage=-1;
+  function state(){
+    var y=window.scrollY||window.pageYOffset;
+    var h=clamp(y/(heroH*.85),0,1), p=clamp((y-flTop)/flLen,0,1);
+    var fade=1 - smooth(flTop+flLen - vh*.05, flTop+flLen + vh*.5, y);
+    if (reduced){ h=0; p=.64; }
+    return {h:h, p:p, fade:fade};
+  }
+
+  function draw(dt){
+    t+=dt;
+    var s=state(), h=s.h, p=s.p;
+    canvas.style.opacity=s.fade.toFixed(3);
+    if (s.fade<=.001){ hideCallouts(); return; }
+
+    var stage = p<.25?0 : p<.5?1 : p<.75?2 : 3;
+    if (stage!==lastStage && !reduced){ steps.forEach(function(li,k){ li.classList.toggle('on', k===stage); }); lastStage=stage; }
+    if (bar) bar.style.transform='scaleY('+p.toFixed(4)+')';
+
+    var ex = reduced ? 0 : smooth(.18,.85,h)*(1-smooth(0,.13,p));
+    var move = smooth(.02,.22,p);
+    var tagsAmt = smooth(.08,.2,p)*(1-smooth(.42,.5,p));
+    var foot = smooth(.25,.38,p)*(1-.55*smooth(.9,1,p));
+    var grow = smooth(.28,.48,p);
+    var vote = smooth(.5,.58,p);
+    var red = smooth(.55,.66,p), iso = smooth(.76,.93,p);
+
+    // lead drone: hero -> exploded view -> its slot
+    var lead=drones[LEAD];
+    lead.visible=true;
+    lead.position.lerpVectors(HERO_POS, slots[LEAD], move);
+    lead.scale.setScalar(lerp(HERO_SCALE, 1, move));
+    lead.userData.list.forEach(function(o){ o.position.copy(o.userData.base).addScaledVector(o.userData.dir, ex*.8); });
+    lead.userData.pop=1;
+
+    // the rest pop out of the lead
+    order.forEach(function(idx, k){
+      var d=drones[idx], st=.07 + k*.012, q=clamp((p-st)/.11,0,1);
+      var pop = q<=0 ? 0 : back(q);
+      d.visible = q>0;
+      d.userData.pop = q;
+      if (!d.visible) return;
+      d.position.lerpVectors(lead.position, slots[idx], Math.min(pop,1.08));
+      d.position.z += Math.sin(q*Math.PI)*1.1;
+      d.scale.setScalar(Math.max(.001, Math.min(pop,1.12)));
+    });
+
+    drones.forEach(function(d, i){
+      if (!d.visible){ tags[i].visible=false; feet[i].visible=false; return; }
+      feet[i].visible=true;
+      var u=d.userData, settled=clamp(u.pop,0,1);
+      if (!reduced){
+        d.rotation.y += dt*(i===LEAD ? .22*(1-move)+.08 : .08);
+        d.position.y += Math.sin(t*u.sp+u.ph)*.07*settled*(i===LEAD?move:1);
+        u.blades.forEach(function(b){ b.rotation.y += dt*32; });
+      }
+      var isR = (i===ROGUE);
+      u.mat.color.copy(cInk); if (isR) u.mat.color.lerp(cRed, red);
+      u.led.material.color.copy(cBlue); if (isR) u.led.material.color.lerp(cRed, red);
+      if (isR){ d.position.y -= iso*1.6; u.mat.opacity=.92*(1-.72*iso); u.led.material.opacity=1-.7*iso; }
+      else { u.mat.opacity=.92; u.led.material.opacity=1; }
+
+      var tg=tags[i];
+      tg.visible = tagsAmt>.01;
+      if (tg.visible){ tg.position.set(d.position.x, d.position.y+.62*d.scale.x, d.position.z); tg.scale.setScalar(Math.max(.001,tagsAmt*settled)); tg.quaternion.copy(camera.quaternion); }
+
+      var f=feet[i];
+      f.position.set(d.position.x, GROUND, d.position.z);
+      f.material.opacity = foot*settled*(isR ? (1-.8*iso) : 1)*.9;
+      f.material.color.copy(cBlue); if (isR) f.material.color.lerp(cRed, red);
+    });
+    feet[LEAD].visible = move>.5; tags[LEAD].visible = tags[LEAD].visible && move>.5;
+
+    // attestation links between drones whose footprints overlap
+    var n=0;
+    for (var k=0;k<pairs.length;k++){
+      var a=pairs[k][0], b=pairs[k][1], A=drones[a], B=drones[b];
+      if (!A.visible || !B.visible || A.userData.pop<.9 || B.userData.pop<.9) continue;
+      var rl = (a===ROGUE || b===ROGUE);
+      if (rl && iso>.55) continue;
+      var c = (rl && red>.5) ? cRed : cMag, o=n*6;
+      lp[o]=A.position.x; lp[o+1]=A.position.y; lp[o+2]=A.position.z;
+      lp[o+3]=lerp(A.position.x,B.position.x,grow); lp[o+4]=lerp(A.position.y,B.position.y,grow); lp[o+5]=lerp(A.position.z,B.position.z,grow);
+      lc[o]=c.r; lc[o+1]=c.g; lc[o+2]=c.b; lc[o+3]=c.r; lc[o+4]=c.g; lc[o+5]=c.b;
+      n++;
+    }
+    lgeo.setDrawRange(0, n*2);
+    lgeo.attributes.position.needsUpdate=true; lgeo.attributes.color.needsUpdate=true;
+    linkMat.opacity = .85*(1 - vote*.4 + vote*.4*Math.abs(Math.sin(t*2.6)));
+
+    // camera: a slow orbit that the scroll drives
+    var ang = -.18 + p*.36 + (reduced ? 0 : Math.sin(t*.25)*.03);
+    camera.position.set(Math.sin(ang)*13, 3.4 - p*.6, Math.cos(ang)*13);
+    camera.lookAt(0,-.2,0);
+
+    renderer.render(scene, camera);
+
+    // exploded-view callouts
+    var co=smooth(.3,.8,ex);
+    if (co<.02){ hideCallouts(); }
+    else {
+      ['jetson','body','camera','rotor'].forEach(function(key){
+        var el=callouts[key], part=lead.userData.parts[key]; if (!el || !part) return;
+        part.getWorldPosition(tmp); tmp.project(camera);
+        var x=(tmp.x*.5+.5)*innerWidth, yy=(-tmp.y*.5+.5)*innerHeight;
+        el.style.visibility='visible'; el.style.opacity=co.toFixed(3);
+        el.style.transform='translate('+Math.min(x+12, innerWidth-260).toFixed(1)+'px,'+(yy-9).toFixed(1)+'px)';
+      });
+    }
+  }
+  function hideCallouts(){ for (var k in callouts){ callouts[k].style.visibility='hidden'; callouts[k].style.opacity='0'; } }
+
+  if (reduced){
+    draw(0);
+    addEventListener('scroll', function(){ canvas.style.opacity=state().fade.toFixed(3); }, {passive:true});
+    return;
+  }
+  var running=true, last=performance.now();
+  document.addEventListener('visibilitychange', function(){ running=!document.hidden; if (running){ last=performance.now(); requestAnimationFrame(loop); } });
+  function loop(now){
+    if (!running) return;
+    var dt=Math.min((now-last)/1000, .05); last=now;
+    draw(dt);
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+})();
+</script>
+
+</body>
+</html>
