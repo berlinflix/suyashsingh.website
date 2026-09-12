@@ -640,6 +640,17 @@ footer .big{font-family:var(--display); font-size:clamp(64px,10vw,150px); line-h
   addEventListener('resize', function(){ layout(); if (reduced) draw(0); });
 
   var tmp=V(0,0,0), t=0, lastStage=-1;
+  // callout anchoring: park each label just off its part's edge, never on top of it
+  var coAnchor=V(0,0,0), camRight=V(0,0,0), vA=V(0,0,0), vB=V(0,0,0), wScale=V(0,0,0);
+  function partHalfWidth(part){
+    if (part.userData.r0 === undefined){
+      var size=V(0,0,0); new THREE.Box3().setFromObject(part).getSize(size);
+      part.getWorldScale(wScale);
+      part.userData.r0 = Math.max(size.x, size.z) * .5 / (wScale.x || 1);
+    }
+    part.getWorldScale(wScale);
+    return part.userData.r0 * wScale.x;
+  }
   function state(){
     var y=window.scrollY||window.pageYOffset;
     var h=clamp(y/(heroH*.85),0,1), p=clamp((y-flTop)/flLen,0,1);
@@ -741,14 +752,19 @@ footer .big{font-family:var(--display); font-size:clamp(64px,10vw,150px); line-h
     if (co<.02){ hideCallouts(); }
     else {
       ['jetson','body','camera','rotor'].forEach(function(key){
+        // GAP is extra breathing room past the edge, in world units
         var el=callouts[key], part=lead.userData.parts[key]; if (!el || !part) return;
-        part.getWorldPosition(tmp); tmp.project(camera);
-        var x=(tmp.x*.5+.5)*innerWidth, yy=(-tmp.y*.5+.5)*innerHeight;
+        part.getWorldPosition(tmp);
+        camera.matrixWorld.extractBasis(camRight, vA, vB);
+        coAnchor.copy(tmp).addScaledVector(camRight, partHalfWidth(part) + GAP[key]);
+        coAnchor.project(camera); tmp.project(camera);
+        var x=(coAnchor.x*.5+.5)*innerWidth, yy=(-tmp.y*.5+.5)*innerHeight;
         el.style.visibility='visible'; el.style.opacity=co.toFixed(3);
         el.style.transform='translate('+Math.min(x+12, innerWidth-260).toFixed(1)+'px,'+(yy-9).toFixed(1)+'px)';
       });
     }
   }
+  var GAP={jetson:.04, body:.10, camera:.05, rotor:.05};
   function hideCallouts(){ for (var k in callouts){ callouts[k].style.visibility='hidden'; callouts[k].style.opacity='0'; } }
 
   if (reduced){
