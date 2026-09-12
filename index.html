@@ -655,7 +655,7 @@ footer .big{font-family:var(--display); font-size:clamp(64px,10vw,150px); line-h
   var tmp=V(0,0,0), t=0, lastStage=-1;
   // caption offsets from each part, in px. tuned by projecting the drone's wireframe
   // vertices and minimising how many land inside a caption box, across 3 viewports.
-  var CO_NUDGE={jetson:[26,-76], body:[52,52], camera:[16,36], rotor:[16,36]};
+  var CO_NUDGE={jetson:[24,-64], body:[44,52], camera:[34,0], rotor:[54,0]};
   function state(){
     var y=window.scrollY||window.pageYOffset;
     var h=clamp(y/(heroH*.85),0,1), p=clamp((y-flTop)/flLen,0,1);
@@ -769,26 +769,20 @@ footer .big{font-family:var(--display); font-size:clamp(64px,10vw,150px); line-h
         var px=(tmp.x*.5+.5)*innerWidth, py=(-tmp.y*.5+.5)*innerHeight;
         placed.push({el:el, key:key, px:px, py:py, x:px + n[0], y:py - 9 + n[1]});
       });
-      // captions chase moving parts, so push apart any that would sit on each other
-      placed.sort(function(a,b){ return a.y-b.y; });
-      for (var i=1;i<placed.length;i++){
-        var need=Math.max(58, (placed[i-1].el._h||58) + 10);   // 58px floor, never trust a 0 measurement
-        if (placed[i].y - placed[i-1].y < need) placed[i].y = placed[i-1].y + need;
-      }
       placed.forEach(function(o){
         o.el.style.visibility='visible'; o.el.style.opacity=co.toFixed(3);
-        var w=o.el._w||200, h=o.el._h||58;
+        var w=o.el._w||170, h=o.el._h||58;
         var x=Math.max(10, Math.min(o.x, innerWidth - w - 14));
         var y=Math.max(8, Math.min(o.y, innerHeight - h - 10));
         o.el.style.transform='translate('+x.toFixed(1)+'px,'+y.toFixed(1)+'px)';
-        // leader runs from the part itself to whichever edge of the caption faces it,
-        // so it stays attached however the part moves
+        // short leader from the part to the caption edge facing it - stays attached
+        // as the part moves, which a fixed CSS dash could not do
         var ln=leaders[o.key];
         if (ln){
-          var ax = (o.px < x) ? x-6 : x+w+6;
+          var ax = (o.px < x) ? x-7 : x+w+7;
           ln.setAttribute('x1', o.px.toFixed(1)); ln.setAttribute('y1', o.py.toFixed(1));
           ln.setAttribute('x2', ax.toFixed(1));   ln.setAttribute('y2', (y+11).toFixed(1));
-          ln.style.opacity=(co*.75).toFixed(3);
+          ln.style.opacity=(co*.7).toFixed(3);
         }
       });
     }
