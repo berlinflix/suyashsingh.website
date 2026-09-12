@@ -769,6 +769,16 @@ footer .big{font-family:var(--display); font-size:clamp(64px,10vw,150px); line-h
         var px=(tmp.x*.5+.5)*innerWidth, py=(-tmp.y*.5+.5)*innerHeight;
         placed.push({el:el, key:key, px:px, py:py, x:px + n[0], y:py - 9 + n[1]});
       });
+      // separate only captions that genuinely collide, by the least amount that clears
+      // them. the horizontal test matters: without it every caption gets pushed and they
+      // cascade into a column far from their parts, which is what stretched the leaders.
+      placed.sort(function(a,b){ return a.y-b.y; });
+      for (var i=1;i<placed.length;i++){
+        var pv=placed[i-1], cu=placed[i];
+        if (Math.abs(cu.x - pv.x) >= (pv.el._w||170)) continue;
+        var need=(pv.el._h||58) + 6;
+        if (cu.y - pv.y < need) cu.y = pv.y + need;
+      }
       placed.forEach(function(o){
         o.el.style.visibility='visible'; o.el.style.opacity=co.toFixed(3);
         var w=o.el._w||170, h=o.el._h||58;
