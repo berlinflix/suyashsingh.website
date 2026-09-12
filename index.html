@@ -752,21 +752,22 @@ footer .big{font-family:var(--display); font-size:clamp(64px,10vw,150px); line-h
       ['jetson','body','camera','rotor'].forEach(function(key){
         var el=callouts[key], part=lead.userData.parts[key]; if (!el || !part) return;
         part.getWorldPosition(tmp); tmp.project(camera);
-        if (!el._w) el._w = el.offsetWidth || 240;
-        if (!el._h) el._h = el.offsetHeight || 46;
+        // don't cache a zero: fonts may still be loading the first time these are shown
+        if (!el._w) { var ow=el.offsetWidth; if (ow) el._w=ow; }
+        if (!el._h) { var oh=el.offsetHeight; if (oh) el._h=oh; }
         var n=CO_NUDGE[key];
         placed.push({el:el, x:(tmp.x*.5+.5)*innerWidth + n[0], y:(-tmp.y*.5+.5)*innerHeight - 9 + n[1]});
       });
       // captions chase moving parts, so push apart any that would sit on each other
       placed.sort(function(a,b){ return a.y-b.y; });
       for (var i=1;i<placed.length;i++){
-        var need=placed[i-1].el._h + 10;
+        var need=Math.max(58, (placed[i-1].el._h||58) + 10);   // 58px floor, never trust a 0 measurement
         if (placed[i].y - placed[i-1].y < need) placed[i].y = placed[i-1].y + need;
       }
       placed.forEach(function(o){
         o.el.style.visibility='visible'; o.el.style.opacity=co.toFixed(3);
-        var x=Math.max(10, Math.min(o.x, innerWidth - o.el._w - 14));
-        var y=Math.max(8, Math.min(o.y, innerHeight - o.el._h - 10));
+        var x=Math.max(10, Math.min(o.x, innerWidth - (o.el._w||240) - 14));
+        var y=Math.max(8, Math.min(o.y, innerHeight - (o.el._h||58) - 10));
         o.el.style.transform='translate('+x.toFixed(1)+'px,'+y.toFixed(1)+'px)';
       });
     }
