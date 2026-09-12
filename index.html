@@ -87,10 +87,10 @@ strong{color:var(--ink); font-weight:600;}
 /* exploded-view callouts */
 .callouts{position:fixed; inset:0; z-index:3; pointer-events:none;}
 .co{position:absolute; left:0; top:0; visibility:hidden; opacity:0; display:flex; gap:10px; align-items:flex-start; will-change:transform;}
-.co::before{content:""; width:26px; height:1px; background:var(--ink); margin-top:8px;}
+.co::before{content:""; width:18px; height:1px; background:var(--ink); margin-top:8px;}
 .co b{display:block; font-family:var(--mono); font-weight:500; font-size:11px; letter-spacing:.12em;
   text-transform:uppercase; color:var(--ink);}
-.co span{display:block; font-style:italic; font-size:14.5px; color:var(--ink-2); max-width:22ch; line-height:1.35;}
+.co span{display:block; font-style:italic; font-size:14.5px; color:var(--ink-2); max-width:17ch; line-height:1.35;}
 
 /* ---------- pinned 3D section ---------- */
 .flight{position:relative; height:420vh;}
@@ -237,7 +237,7 @@ footer .big{font-family:var(--display); font-size:clamp(64px,10vw,150px); line-h
   .steps li{display:none;}
   .steps li.on{display:block;}
   .legend{display:none;}
-  .callouts{display:none;}   /* four floating captions over a phone-sized drone is unreadable */
+  .callouts{display:none;}
   .entry-row{grid-template-columns:minmax(0,1fr) 30px; gap:10px 14px; padding:24px 0;}
   .entry-row .tag{grid-column:1 / -1;}
   .entry-row .one{grid-column:1 / -1; grid-row:3;}
@@ -252,6 +252,8 @@ footer .big{font-family:var(--display); font-size:clamp(64px,10vw,150px); line-h
 }
 
 /* fallbacks: no WebGL, or reduced motion */
+/* under ~1100px there is no clear band to the right of the drone for a caption column */
+@media (max-width:1140px){ .callouts{display:none;} }
 .no-gl #sky,.no-gl .callouts,.no-gl .legend{display:none;}
 .no-gl .flight,.reduced .flight{height:auto;}
 .no-gl .flight-sticky,.reduced .flight-sticky{position:relative; height:auto; padding:40px 0 60px;}
@@ -647,7 +649,7 @@ footer .big{font-family:var(--display); font-size:clamp(64px,10vw,150px); line-h
   layout();
   addEventListener('resize', function(){ layout(); if (reduced) draw(0); });
 
-  var tmp=V(0,0,0), t=0, lastStage=-1;
+  var tmp=V(0,0,0), co2=V(0,0,0), leadBox=null, t=0, lastStage=-1;
   function state(){
     var y=window.scrollY||window.pageYOffset;
     var h=clamp(y/(heroH*.85),0,1), p=clamp((y-flTop)/flLen,0,1);
@@ -748,6 +750,24 @@ footer .big{font-family:var(--display); font-size:clamp(64px,10vw,150px); line-h
     var co=smooth(.3,.8,ex);
     if (co<.02){ hideCallouts(); }
     else {
+      // captions sit in one column pinned to the right margin, the way an exploded diagram
+      // is annotated - chasing each part individually just puts text on top of the geometry
+      var colW=0;
+      for (var ck in callouts){ var cw=callouts[ck]._w||0; if (cw>colW) colW=cw; }
+      var colX=innerWidth - (colW||194) - 16;
+      // measure how far right the drone actually reaches and only show the column if it
+      // genuinely clears it, so the captions can never sit on top of the drawing
+      if (!leadBox) leadBox=new THREE.Box3();
+      leadBox.setFromObject(lead);
+      var droneRight=-1e9;
+      for (var bi=0; bi<8; bi++){
+        co2.set(bi&1?leadBox.max.x:leadBox.min.x, bi&2?leadBox.max.y:leadBox.min.y, bi&4?leadBox.max.z:leadBox.min.z);
+        co2.project(camera);
+        var bsx=(co2.x*.5+.5)*innerWidth; if (bsx>droneRight) droneRight=bsx;
+      }
+      // fade the column out as the drone grows into it, rather than popping it away
+      var room=colX - droneRight, roomFade=Math.max(0, Math.min(1, (room-12)/46));
+      if (roomFade<=.02){ hideCallouts(); return; }
       var placed=[];
       ['jetson','body','camera','rotor'].forEach(function(key){
         var el=callouts[key], part=lead.userData.parts[key]; if (!el || !part) return;
@@ -755,8 +775,7 @@ footer .big{font-family:var(--display); font-size:clamp(64px,10vw,150px); line-h
         // don't cache a zero: fonts may still be loading the first time these are shown
         if (!el._w) { var ow=el.offsetWidth; if (ow) el._w=ow; }
         if (!el._h) { var oh=el.offsetHeight; if (oh) el._h=oh; }
-        var n=CO_NUDGE[key];
-        placed.push({el:el, x:(tmp.x*.5+.5)*innerWidth + n[0], y:(-tmp.y*.5+.5)*innerHeight - 9 + n[1]});
+        placed.push({el:el, x:colX, y:(-tmp.y*.5+.5)*innerHeight - 9});
       });
       // captions chase moving parts, so push apart any that would sit on each other
       placed.sort(function(a,b){ return a.y-b.y; });
@@ -765,15 +784,14 @@ footer .big{font-family:var(--display); font-size:clamp(64px,10vw,150px); line-h
         if (placed[i].y - placed[i-1].y < need) placed[i].y = placed[i-1].y + need;
       }
       placed.forEach(function(o){
-        o.el.style.visibility='visible'; o.el.style.opacity=co.toFixed(3);
-        var x=Math.max(10, Math.min(o.x, innerWidth - (o.el._w||240) - 14));
+        o.el.style.visibility='visible'; o.el.style.opacity=(co*roomFade).toFixed(3);
+        var x=Math.max(10, o.x);
         var y=Math.max(8, Math.min(o.y, innerHeight - (o.el._h||58) - 10));
         o.el.style.transform='translate('+x.toFixed(1)+'px,'+y.toFixed(1)+'px)';
       });
     }
   }
-  // small pixel nudges off each part, then a pass that stops the captions colliding
-  var CO_NUDGE={jetson:[22,-12], body:[42,16], camera:[22,6], rotor:[22,-8]};
+
   function hideCallouts(){ for (var k in callouts){ callouts[k].style.visibility='hidden'; callouts[k].style.opacity='0'; } }
 
   if (reduced){
