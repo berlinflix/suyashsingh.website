@@ -632,8 +632,8 @@ footer .big{font-family:var(--display); font-size:clamp(64px,10vw,150px); line-h
     narrow = innerWidth < 860;
     camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix();
     renderer.setSize(innerWidth, innerHeight);
-    if (narrow){ swarm.position.set(0,1.9,0); swarm.scale.setScalar(.6); HERO_POS.set(0,-7.2,1.7); HERO_SCALE=2.8; }
-    else       { swarm.position.set(2.4,.1,0); swarm.scale.setScalar(1);  HERO_POS.set(.5,.35,2.2); HERO_SCALE=2.2; }
+    if (narrow){ swarm.position.set(0,1.9,0); swarm.scale.setScalar(.6); HERO_POS.set(0,-7.2,1.7); HERO_SCALE=2.1; }
+    else       { swarm.position.set(2.4,.1,0); swarm.scale.setScalar(1);  HERO_POS.set(.2,.35,2.2); HERO_SCALE=1.55; }
     measure();
   }
   layout();
@@ -682,7 +682,7 @@ footer .big{font-family:var(--display); font-size:clamp(64px,10vw,150px); line-h
     lead.visible=true;
     lead.position.lerpVectors(HERO_POS, slots[LEAD], move);
     lead.scale.setScalar(lerp(HERO_SCALE, 1, move));
-    lead.userData.list.forEach(function(o){ o.position.copy(o.userData.base).addScaledVector(o.userData.dir, ex*.8); });
+    lead.userData.list.forEach(function(o){ o.position.copy(o.userData.base).addScaledVector(o.userData.dir, ex*.5); });   // spread: keep the exploded rotors inside the frame
     lead.userData.pop=1;
 
     // the rest pop out of the lead
