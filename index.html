@@ -237,6 +237,7 @@ footer .big{font-family:var(--display); font-size:clamp(64px,10vw,150px); line-h
   .steps li{display:none;}
   .steps li.on{display:block;}
   .legend{display:none;}
+  .callouts{display:none;}   /* four floating captions over a phone-sized drone is unreadable */
   .entry-row{grid-template-columns:minmax(0,1fr) 30px; gap:10px 14px; padding:24px 0;}
   .entry-row .tag{grid-column:1 / -1;}
   .entry-row .one{grid-column:1 / -1; grid-row:3;}
@@ -632,25 +633,21 @@ footer .big{font-family:var(--display); font-size:clamp(64px,10vw,150px); line-h
     narrow = innerWidth < 860;
     camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix();
     renderer.setSize(innerWidth, innerHeight);
-    if (narrow){ swarm.position.set(0,1.9,0); swarm.scale.setScalar(.6); HERO_POS.set(0,-7.2,1.7); HERO_SCALE=2.1; }
-    else       { swarm.position.set(2.4,.1,0); swarm.scale.setScalar(1);  HERO_POS.set(.2,.35,2.2); HERO_SCALE=1.55; }
+    // scale the swarm to the phone's width so the outer drones aren't cut off
+    if (narrow){ swarm.position.set(0,1.9,0); swarm.scale.setScalar(Math.max(.34, Math.min(.6, innerWidth/1060)));
+                 HERO_POS.set(0,-7.2,1.7); HERO_SCALE=2.1; }
+    else       { var asp=innerWidth/innerHeight;
+                 // the visible width depends on the window's aspect, so fit the swarm to it:
+                 // a tall window sees a narrower slice of the scene and would clip the outer rotors
+                 swarm.position.set(Math.max(.8, Math.min(2.4, asp*1.1)), .1, 0);
+                 swarm.scale.setScalar(Math.max(.5, Math.min(1, asp/1.95)));
+                 HERO_POS.set(.2,.35,2.2); HERO_SCALE=1.55; }
     measure();
   }
   layout();
   addEventListener('resize', function(){ layout(); if (reduced) draw(0); });
 
   var tmp=V(0,0,0), t=0, lastStage=-1;
-  // callout anchoring: park each label just off its part's edge, never on top of it
-  var coAnchor=V(0,0,0), camRight=V(0,0,0), vA=V(0,0,0), vB=V(0,0,0), wScale=V(0,0,0);
-  function partHalfWidth(part){
-    if (part.userData.r0 === undefined){
-      var size=V(0,0,0); new THREE.Box3().setFromObject(part).getSize(size);
-      part.getWorldScale(wScale);
-      part.userData.r0 = Math.max(size.x, size.z) * .5 / (wScale.x || 1);
-    }
-    part.getWorldScale(wScale);
-    return part.userData.r0 * wScale.x;
-  }
   function state(){
     var y=window.scrollY||window.pageYOffset;
     var h=clamp(y/(heroH*.85),0,1), p=clamp((y-flTop)/flLen,0,1);
@@ -682,7 +679,7 @@ footer .big{font-family:var(--display); font-size:clamp(64px,10vw,150px); line-h
     lead.visible=true;
     lead.position.lerpVectors(HERO_POS, slots[LEAD], move);
     lead.scale.setScalar(lerp(HERO_SCALE, 1, move));
-    lead.userData.list.forEach(function(o){ o.position.copy(o.userData.base).addScaledVector(o.userData.dir, ex*.5); });   // spread: keep the exploded rotors inside the frame
+    lead.userData.list.forEach(function(o){ o.position.copy(o.userData.base).addScaledVector(o.userData.dir, ex*.44); });  // spread: keep the exploded rotors inside the frame
     lead.userData.pop=1;
 
     // the rest pop out of the lead
@@ -751,23 +748,31 @@ footer .big{font-family:var(--display); font-size:clamp(64px,10vw,150px); line-h
     var co=smooth(.3,.8,ex);
     if (co<.02){ hideCallouts(); }
     else {
+      var placed=[];
       ['jetson','body','camera','rotor'].forEach(function(key){
-        // GAP is extra breathing room past the edge, in world units
         var el=callouts[key], part=lead.userData.parts[key]; if (!el || !part) return;
-        part.getWorldPosition(tmp);
-        camera.matrixWorld.extractBasis(camRight, vA, vB);
-        coAnchor.copy(tmp).addScaledVector(camRight, partHalfWidth(part)*GAP[key].f + GAP[key].g);
-        coAnchor.project(camera); tmp.project(camera);
-        var x=(coAnchor.x*.5+.5)*innerWidth, yy=(-tmp.y*.5+.5)*innerHeight;
-        el.style.visibility='visible'; el.style.opacity=co.toFixed(3);
+        part.getWorldPosition(tmp); tmp.project(camera);
         if (!el._w) el._w = el.offsetWidth || 240;
-        el.style.transform='translate('+Math.min(x+12, innerWidth-el._w-14).toFixed(1)+'px,'+(yy-9).toFixed(1)+'px)';
+        if (!el._h) el._h = el.offsetHeight || 46;
+        var n=CO_NUDGE[key];
+        placed.push({el:el, x:(tmp.x*.5+.5)*innerWidth + n[0], y:(-tmp.y*.5+.5)*innerHeight - 9 + n[1]});
+      });
+      // captions chase moving parts, so push apart any that would sit on each other
+      placed.sort(function(a,b){ return a.y-b.y; });
+      for (var i=1;i<placed.length;i++){
+        var need=placed[i-1].el._h + 10;
+        if (placed[i].y - placed[i-1].y < need) placed[i].y = placed[i-1].y + need;
+      }
+      placed.forEach(function(o){
+        o.el.style.visibility='visible'; o.el.style.opacity=co.toFixed(3);
+        var x=Math.max(10, Math.min(o.x, innerWidth - o.el._w - 14));
+        var y=Math.max(8, Math.min(o.y, innerHeight - o.el._h - 10));
+        o.el.style.transform='translate('+x.toFixed(1)+'px,'+y.toFixed(1)+'px)';
       });
     }
   }
-  // f = how much of the part's half-width to clear, g = extra gap (world units).
-  // the rotor is wide, so it only needs a fraction or the label flies off-screen.
-  var GAP={jetson:{f:1,g:.04}, body:{f:1,g:.10}, camera:{f:1,g:.05}, rotor:{f:.35,g:0}};
+  // small pixel nudges off each part, then a pass that stops the captions colliding
+  var CO_NUDGE={jetson:[22,-12], body:[42,16], camera:[22,6], rotor:[22,-8]};
   function hideCallouts(){ for (var k in callouts){ callouts[k].style.visibility='hidden'; callouts[k].style.opacity='0'; } }
 
   if (reduced){
