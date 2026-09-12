@@ -756,15 +756,18 @@ footer .big{font-family:var(--display); font-size:clamp(64px,10vw,150px); line-h
         var el=callouts[key], part=lead.userData.parts[key]; if (!el || !part) return;
         part.getWorldPosition(tmp);
         camera.matrixWorld.extractBasis(camRight, vA, vB);
-        coAnchor.copy(tmp).addScaledVector(camRight, partHalfWidth(part) + GAP[key]);
+        coAnchor.copy(tmp).addScaledVector(camRight, partHalfWidth(part)*GAP[key].f + GAP[key].g);
         coAnchor.project(camera); tmp.project(camera);
         var x=(coAnchor.x*.5+.5)*innerWidth, yy=(-tmp.y*.5+.5)*innerHeight;
         el.style.visibility='visible'; el.style.opacity=co.toFixed(3);
-        el.style.transform='translate('+Math.min(x+12, innerWidth-260).toFixed(1)+'px,'+(yy-9).toFixed(1)+'px)';
+        if (!el._w) el._w = el.offsetWidth || 240;
+        el.style.transform='translate('+Math.min(x+12, innerWidth-el._w-14).toFixed(1)+'px,'+(yy-9).toFixed(1)+'px)';
       });
     }
   }
-  var GAP={jetson:.04, body:.10, camera:.05, rotor:.05};
+  // f = how much of the part's half-width to clear, g = extra gap (world units).
+  // the rotor is wide, so it only needs a fraction or the label flies off-screen.
+  var GAP={jetson:{f:1,g:.04}, body:{f:1,g:.10}, camera:{f:1,g:.05}, rotor:{f:.35,g:0}};
   function hideCallouts(){ for (var k in callouts){ callouts[k].style.visibility='hidden'; callouts[k].style.opacity='0'; } }
 
   if (reduced){
